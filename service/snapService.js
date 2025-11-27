@@ -13,6 +13,13 @@ async function getUserById(id) {
   return result.rows[0];
 }
 
+async function getUserByEmail(email) {
+  const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+    email,
+  ]);
+  return result.rows[0];
+}
+
 async function addUser(data) {
   const { username, email, password } = data;
   const result = await pool.query(
@@ -26,9 +33,9 @@ async function updateUser(id, data) {
   const { username, email, password } = data;
   const result = await pool.query(
     `UPDATE users
-SET username = $1, email = $2, password = $3
-WHERE user_id = $4
-RETURNING *`,
+     SET username = $1, email = $2, password = $3
+     WHERE user_id = $4
+     RETURNING *`,
     [username, email, password, id]
   );
   return result.rows[0];
@@ -45,6 +52,7 @@ async function deleteUser(id) {
 module.exports = {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   addUser,
   updateUser,
   deleteUser,
