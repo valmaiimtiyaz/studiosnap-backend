@@ -2,13 +2,15 @@ const express = require("express");
 const {
   getAllUsers,
   getUserById,
-  addUser, 
+  addUser,
   updateUser,
   deleteUser,
+  login, 
 } = require("../controllers/snapControllers");
 
 const router = express.Router();
 
+router.post("/login", login);
 router.post("/register", addUser);
 router.get("/users", getAllUsers);
 router.get("/users/:id", getUserById);
