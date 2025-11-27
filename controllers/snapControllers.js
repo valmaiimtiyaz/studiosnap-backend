@@ -9,7 +9,7 @@ async function login(req, res) {
       return res.status(404).json({
         status: "error",
         code: 404,
-        message: "Email tidak ditemukan",
+        message: "Email not found", 
       });
     }
 
@@ -17,14 +17,14 @@ async function login(req, res) {
       return res.status(401).json({
         status: "error",
         code: 401,
-        message: "Password salah",
+        message: "Invalid password", 
       });
     }
 
     res.status(200).json({
       status: "success",
       code: 200,
-      message: "Login berhasil",
+      message: "Login successful", 
       data: user,
     });
   } catch (err) {
