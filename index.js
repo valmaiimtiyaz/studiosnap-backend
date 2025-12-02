@@ -1,10 +1,10 @@
-const app = require("./app");
+const app = require("./app"); 
 
 app.use((err, req, res, next) => {
   console.error(err.stack); 
   if (res.headersSent) {
     return next(err);
-  }
+  } 
   res.status(500).json({
     status: "error",
     code: 500,
@@ -12,5 +12,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 3030;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = app;
