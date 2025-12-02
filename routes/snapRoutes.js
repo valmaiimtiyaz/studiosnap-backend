@@ -7,7 +7,6 @@ const {
   deleteUser,
   login,
   startPhotoSession,
-  uploadPhotoAsset,
   endPhotoSession,
 } = require("../controllers/snapControllers");
 
@@ -20,7 +19,6 @@ router.get("/users/:id", getUserById);
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 router.post("/start-session", startPhotoSession);
-router.post("/upload-photo", uploadPhotoAsset);
 router.post("/end-session", endPhotoSession);
 
 module.exports = router;

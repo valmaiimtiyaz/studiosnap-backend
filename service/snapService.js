@@ -29,10 +29,7 @@ async function addUser(data) {
 async function updateUser(id, data) {
   const { username, email, password } = data;
   const result = await pool.query(
-    `UPDATE users
-         SET username = $1, email = $2, password = $3
-         WHERE id = $4
-         RETURNING *`,
+    `UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4 RETURNING *`,
     [username, email, password, id]
   );
   return result.rows[0];
@@ -62,22 +59,6 @@ async function endSession(sessionId) {
   return result.rows[0];
 }
 
-async function incrementPhotoCount(sessionId) {
-  const result = await pool.query(
-    "UPDATE photo_sessions SET number_of_photos = number_of_photos + 1 WHERE session_id = $1 RETURNING *",
-    [sessionId]
-  );
-  return result.rows[0];
-}
-
-async function savePhotoAsset(sessionId, assetUrl, mediaType) {
-  const result = await pool.query(
-    "INSERT INTO photo_assets (session_id, url_file_storage, media_type, upload_date) VALUES ($1, $2, $3, NOW()) RETURNING *",
-    [sessionId, assetUrl, mediaType]
-  );
-  return result.rows[0];
-}
-
 module.exports = {
   getAllUsers,
   getUserById,
@@ -87,6 +68,4 @@ module.exports = {
   deleteUser,
   startSession,
   endSession,
-  incrementPhotoCount,
-  savePhotoAsset,
 };
