@@ -127,11 +127,89 @@ async function deleteUser(req, res) {
   }
 }
 
+
+function simulateFileUpload(base64Data, sessionId) {
+  const fileExtension = 'image/jpeg';
+  const assetUrl = `https://dummy-storage.com/assets/${sessionId}_${Date.now()}.jpeg`;
+  return { assetUrl, mediaType: fileExtension };
+}
+
+async function startPhotoSession(req, res) {
+  try {
+    const { user_id, filter } = req.body; 
+
+    if (!user_id || !filter) {
+        return res.status(400).json({ status: "error", code: 400, message: "User ID and filter are required." });
+    }
+    
+    const newSession = await usersService.startSession(user_id, filter);
+    
+    res.status(201).json({
+      status: "success",
+      code: 201,
+      message: "Photo session started successfully",
+      data: newSession,
+    });
+  } catch (err) {
+    res.status(500).json({ status: "error", code: 500, message: err.message });
+  }
+}
+
+async function uploadPhotoAsset(req, res) {
+  try {
+    const { session_id, photo_data } = req.body; 
+    
+    if (!session_id || !photo_data) {
+        return res.status(400).json({ status: "error", code: 400, message: "Session ID and photo data are required." });
+    }
+
+    // 1. Unggah ke Cloud Storage
+    const { assetUrl, mediaType } = simulateFileUpload(photo_data, session_id);
+    // 2. Simpan URL di Database
+    const newAsset = await usersService.savePhotoAsset(session_id, assetUrl, mediaType);
+    // 3. Update jumlah foto di Sesi
+    await usersService.incrementPhotoCount(session_id);
+
+    res.status(201).json({
+      status: "success",
+      code: 201,
+      message: "Photo asset uploaded successfully",
+      data: newAsset,
+    });
+  } catch (err) {
+    res.status(500).json({ status: "error", code: 500, message: err.message });
+  }
+}
+
+async function endPhotoSession(req, res) {
+  try {
+    const { session_id } = req.body; 
+
+    if (!session_id) {
+        return res.status(400).json({ status: "error", code: 400, message: "Session ID is required." });
+    }
+    
+    const endedSession = await usersService.endSession(session_id);
+    
+    res.status(200).json({
+      status: "success",
+      code: 200,
+      message: "Photo session ended successfully",
+      data: endedSession,
+    });
+  } catch (err) {
+    res.status(500).json({ status: "error", code: 500, message: err.message });
+  }
+}
+
 module.exports = {
-  login, 
+  login,
   getAllUsers,
   getUserById,
   addUser,
   updateUser,
   deleteUser,
+  startPhotoSession,
+  uploadPhotoAsset,
+  endPhotoSession,
 };
