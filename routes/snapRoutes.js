@@ -5,12 +5,11 @@ const {
   addUser,
   updateUser,
   deleteUser,
-  login, 
-  startPhotoSession, 
-  uploadPhotoAsset, 
+  login,
+  startPhotoSession,
+  uploadPhotoAsset,
   endPhotoSession,
 } = require("../controllers/snapControllers");
-
 
 const router = express.Router();
 
