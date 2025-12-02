@@ -6,7 +6,11 @@ const {
   updateUser,
   deleteUser,
   login, 
+  startPhotoSession, 
+  uploadPhotoAsset, 
+  endPhotoSession,
 } = require("../controllers/snapControllers");
+
 
 const router = express.Router();
 
@@ -16,5 +20,8 @@ router.get("/users", getAllUsers);
 router.get("/users/:id", getUserById);
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
+router.post("/start-session", startPhotoSession);
+router.post("/upload-photo", uploadPhotoAsset);
+router.post("/end-session", endPhotoSession);
 
 module.exports = router;

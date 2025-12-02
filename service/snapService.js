@@ -1,15 +1,12 @@
 const pool = require("../config/db");
 
-// USERS
 async function getAllUsers() {
-  const result = await pool.query("SELECT * FROM users ORDER BY user_id ASC");
+  const result = await pool.query("SELECT * FROM users ORDER BY id ASC");
   return result.rows;
 }
 
 async function getUserById(id) {
-  const result = await pool.query("SELECT * FROM users WHERE user_id = $1", [
-    id,
-  ]);
+  const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
   return result.rows[0];
 }
 
@@ -33,9 +30,9 @@ async function updateUser(id, data) {
   const { username, email, password } = data;
   const result = await pool.query(
     `UPDATE users
-     SET username = $1, email = $2, password = $3
-     WHERE user_id = $4
-     RETURNING *`,
+         SET username = $1, email = $2, password = $3
+         WHERE id = $4
+         RETURNING *`,
     [username, email, password, id]
   );
   return result.rows[0];
@@ -43,13 +40,12 @@ async function updateUser(id, data) {
 
 async function deleteUser(id) {
   const result = await pool.query(
-    "DELETE FROM users WHERE user_id = $1 RETURNING *",
+    "DELETE FROM users WHERE id = $1 RETURNING *",
     [id]
   );
   return result.rows[0];
 }
 
-//entri baru di tabel sesi poto
 async function startSession(userId, filterUsed) {
   const result = await pool.query(
     "INSERT INTO photo_sessions (user_id, date_time_start, filter_used, number_of_photos) VALUES ($1, NOW(), $2, 0) RETURNING *",
@@ -58,7 +54,6 @@ async function startSession(userId, filterUsed) {
   return result.rows[0];
 }
 
-//update waktu selesai sesi
 async function endSession(sessionId) {
   const result = await pool.query(
     "UPDATE photo_sessions SET date_time_end = NOW() WHERE session_id = $1 RETURNING *",
@@ -67,7 +62,6 @@ async function endSession(sessionId) {
   return result.rows[0];
 }
 
-//nambah jumlah foto dalam sesi
 async function incrementPhotoCount(sessionId) {
   const result = await pool.query(
     "UPDATE photo_sessions SET number_of_photos = number_of_photos + 1 WHERE session_id = $1 RETURNING *",
@@ -76,7 +70,6 @@ async function incrementPhotoCount(sessionId) {
   return result.rows[0];
 }
 
-//nyimpen detail photo yg dah di up ke cloud storage
 async function savePhotoAsset(sessionId, assetUrl, mediaType) {
   const result = await pool.query(
     "INSERT INTO photo_assets (session_id, url_file_storage, media_type, upload_date) VALUES ($1, $2, $3, NOW()) RETURNING *",

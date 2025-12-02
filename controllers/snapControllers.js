@@ -9,7 +9,7 @@ async function login(req, res) {
       return res.status(404).json({
         status: "error",
         code: 404,
-        message: "Email not found", 
+        message: "Email not found",
       });
     }
 
@@ -17,14 +17,14 @@ async function login(req, res) {
       return res.status(401).json({
         status: "error",
         code: 401,
-        message: "Invalid password", 
+        message: "Invalid password",
       });
     }
 
     res.status(200).json({
       status: "success",
       code: 200,
-      message: "Login successful", 
+      message: "Login successful",
       data: user,
     });
   } catch (err) {
@@ -127,23 +127,24 @@ async function deleteUser(req, res) {
   }
 }
 
-
 function simulateFileUpload(base64Data, sessionId) {
-  const fileExtension = 'image/jpeg';
+  const fileExtension = "image/jpeg";
   const assetUrl = `https://dummy-storage.com/assets/${sessionId}_${Date.now()}.jpeg`;
   return { assetUrl, mediaType: fileExtension };
 }
 
 async function startPhotoSession(req, res) {
   try {
-    const { user_id, filter } = req.body; 
+    const { user_id, filter } = req.body;
 
     if (!user_id || !filter) {
-        return res.status(400).json({ status: "error", code: 400, message: "User ID and filter are required." });
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: "User ID and filter are required.",
+      });
     }
-    
     const newSession = await usersService.startSession(user_id, filter);
-    
     res.status(201).json({
       status: "success",
       code: 201,
@@ -157,17 +158,21 @@ async function startPhotoSession(req, res) {
 
 async function uploadPhotoAsset(req, res) {
   try {
-    const { session_id, photo_data } = req.body; 
-    
+    const { session_id, photo_data } = req.body;
     if (!session_id || !photo_data) {
-        return res.status(400).json({ status: "error", code: 400, message: "Session ID and photo data are required." });
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: "Session ID and photo data are required.",
+      });
     }
 
-    // 1. Unggah ke Cloud Storage
     const { assetUrl, mediaType } = simulateFileUpload(photo_data, session_id);
-    // 2. Simpan URL di Database
-    const newAsset = await usersService.savePhotoAsset(session_id, assetUrl, mediaType);
-    // 3. Update jumlah foto di Sesi
+    const newAsset = await usersService.savePhotoAsset(
+      session_id,
+      assetUrl,
+      mediaType
+    );
     await usersService.incrementPhotoCount(session_id);
 
     res.status(201).json({
@@ -183,14 +188,16 @@ async function uploadPhotoAsset(req, res) {
 
 async function endPhotoSession(req, res) {
   try {
-    const { session_id } = req.body; 
+    const { session_id } = req.body;
 
     if (!session_id) {
-        return res.status(400).json({ status: "error", code: 400, message: "Session ID is required." });
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: "Session ID is required.",
+      });
     }
-    
     const endedSession = await usersService.endSession(session_id);
-    
     res.status(200).json({
       status: "success",
       code: 200,
