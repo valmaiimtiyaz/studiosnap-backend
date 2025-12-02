@@ -11,6 +11,6 @@ app.use(
   })
 );
 app.use(express.json());
-app.use("/api/auth", snapRoutes);
+app.use("/api", snapRoutes);
 
 module.exports = app;
