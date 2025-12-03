@@ -59,6 +59,21 @@ async function endSession(sessionId) {
   return result.rows[0];
 }
 
+async function getAllFilters() {
+  const result = await pool.query(
+    "SELECT * FROM filters WHERE is_active = TRUE"
+  );
+  return result.rows;
+}
+
+async function saveFeedback(sessionId, rating, comment) {
+  const result = await pool.query(
+    "INSERT INTO feedback (session_id, rating, comment) VALUES ($1, $2, $3) RETURNING *",
+    [sessionId, rating, comment]
+  );
+  return result.rows[0];
+}
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -68,4 +83,6 @@ module.exports = {
   deleteUser,
   startSession,
   endSession,
+  getAllFilters,
+  saveFeedback,
 };

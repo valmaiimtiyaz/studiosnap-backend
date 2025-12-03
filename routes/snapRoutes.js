@@ -8,6 +8,8 @@ const {
   login,
   startPhotoSession,
   endPhotoSession,
+  getFilters,
+  submitFeedback,
 } = require("../controllers/snapControllers");
 
 const router = express.Router();
@@ -20,5 +22,7 @@ router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 router.post("/start-session", startPhotoSession);
 router.post("/end-session", endPhotoSession);
+router.get("/filters", getFilters); 
+router.post("/feedback", submitFeedback); 
 
 module.exports = router;
