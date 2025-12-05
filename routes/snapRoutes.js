@@ -13,8 +13,9 @@ const {
 } = require("../controllers/snapControllers");
 
 const router = express.Router();
+
 router.post("/login", login);
-router.post("/auth/register", addUser); 
+router.post("/register", addUser);
 router.get("/users", getAllUsers);
 router.get("/users/:id", getUserById);
 router.put("/users/:id", updateUser);
